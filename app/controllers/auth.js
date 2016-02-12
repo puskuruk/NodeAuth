@@ -46,30 +46,22 @@ module.exports = {
 
 			.then(function (user) {
 				if (user) {
-					var cookieToken = req.cookies['token'];
-					console.log(cookieToken);
-					var userToken = user.tokens.pop(user.tokens.length - 1);
-					if (cookieToken === userToken) {
-						res.json({
-							"err":false,
-							"token":cookieToken,
-							"msg":"Login Success"
-						});
-					} else {
-						var createToken = randomToken.generate(32);
-						user.tokens.push(createToken);
-						return user.save()
-							.then(function (userAfterSave) {
-								res.cookie("token", createToken).json({
-									"err": false,
-									"token": createToken
-								});
+					var createToken = randomToken.generate(32);
+					user.tokens.push(createToken);
+					return user.save()
+						.then(function (userAfterSave) {
+							res.cookie("token", createToken).json({
+								"err": false,
+								"msg": "Login Success",
+								"Status" : "OK"
 							});
-					}
+						});
+
 				} else {
 					res.status(404).json({
 						"err": true,
-						"msg": "User not found."
+						"msg": "User not found.",
+						"Status":"BAD"
 					});
 				}
 			})
